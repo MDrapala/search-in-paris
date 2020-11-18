@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
+import SearchBar from '../searchBar/index';
 
 export default class Home extends Component {
   render() {
     return (
-      <h1>Initialize state</h1>
+      <SearchBar value="test" />
     );
   }
 }
