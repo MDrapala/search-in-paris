@@ -1,9 +1,16 @@
-import React, { Component } from 'react';
+import React from 'react';
+import './index.css';
 
-export default class SearchBar extends Component {
+export default class SearchBar extends React.Component {
   render() {
+    const { onChange, onSubmit, value } = this.props;
     return (
-      <h1>SearchBar</h1>
+      <form onSubmit={onSubmit} className="search-bar">
+        <input type="search" name="search" onChange={onChange} value={value} pattern=".*\S.*" required />
+        <button className="search-btn" type="submit">
+          <span>Search</span>
+        </button>
+      </form>
     );
   }
 }
