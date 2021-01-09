@@ -19,11 +19,16 @@ export default class Home extends Component {
   handleSubmit(event) {
     event.preventDefault();
     const { search } = this.state;
+
     this.setState({ isLoading: true }, () => {
       axios.get(`https://opendata.paris.fr/api/datasets/1.0/search/?q=${search}`)
         .then((res) => {
           const resultat = res.data;
-          this.setState({ isLoading: false, result: [resultat] });
+          if (resultat.nhits === 0) {
+            document.getElementById('error').innerHTML = `There is nothing for "${search}"`;
+          } else {
+            this.setState({ isLoading: false, result: [resultat] });
+          }
         });
     });
   }
@@ -40,7 +45,8 @@ export default class Home extends Component {
     return (
       <div>
         <SearchBar value={search} onChange={this.handleOnChange} onSubmit={this.handleSubmit} />
-        { isLoading ? <LoadingSpinner /> : result.map((label, i) => <li className="container" key={label.datasets[i].datasetid}><div className="color" dangerouslySetInnerHTML={{ __html: label.datasets[i].metas.description }} /></li>) }
+        <div className="container" id="error" />
+        {isLoading ? <LoadingSpinner /> : result.map((label, i) => <li className="container" key={label.datasets[i].datasetid}><div className="color" dangerouslySetInnerHTML={{ __html: label.datasets[i].metas.description }} /></li>)}
       </div>
     );
   }
