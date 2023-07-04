@@ -1,52 +1,39 @@
-const HtmlWebPackPlugin = require('html-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-
-const devMode = process.env.NODE_ENV !== 'production';
-
-const htmlWebpackPlugin = new HtmlWebPackPlugin({
-  template: './src/index.html',
-  filename: './index.html',
-});
-
-const miniCssExtractPlugin = new MiniCssExtractPlugin({
-  filename: '[name].css',
-  chunkFilename: '[id].css',
-});
+const path = require("path");
 
 module.exports = {
+  mode: "development", // Set the mode to 'development' or 'production'
+  entry: "./src/index.js",
+  output: {
+    filename: "bundle.js",
+    path: path.resolve(__dirname, "dist"),
+  },
   module: {
     rules: [
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        use: [
-          { loader: 'babel-loader' },
-          {
-            loader: 'eslint-loader',
-            options: {
-              failOnError: true,
-            },
+        use: {
+          loader: "babel-loader",
+          options: {
+            presets: ["@babel/preset-react"],
+            plugins: [
+              "@babel/plugin-transform-react-jsx",
+              "@babel/plugin-syntax-dynamic-import",
+            ],
           },
-        ],
+        },
       },
       {
-        test: /\.(sc|sa|c)ss$/,
-        use: [
-          devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
-          'css-loader',
-          'sass-loader',
-        ],
+        test: /\.css$/,
+        use: ["style-loader", "css-loader"],
+      },
+      {
+        test: /\.scss$/,
+        use: ["style-loader", "css-loader", "sass-loader"],
       },
     ],
   },
-  devServer: {
-    historyApiFallback: true,
+  resolve: {
+    extensions: [".js"],
   },
-  output: {
-    publicPath: '/',
-  },
-  plugins: [
-    htmlWebpackPlugin,
-    miniCssExtractPlugin,
-  ],
 };
